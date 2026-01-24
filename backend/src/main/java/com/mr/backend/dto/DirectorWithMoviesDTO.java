@@ -3,6 +3,7 @@ package com.mr.backend.dto;
 import com.mr.backend.domain.Director;
 import com.mr.backend.domain.Movie;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,10 +21,12 @@ public class DirectorWithMoviesDTO {
         this.lastname = director.getLastname();
         this.birthdate = director.getBirthdate();
         
-        if (director.getMovies() != null) {
+        if (director.getMovies() != null && !director.getMovies().isEmpty()) {
             this.movies = director.getMovies().stream()
                 .map(MovieInfo::new)
                 .collect(Collectors.toList());
+        } else {
+            this.movies = new ArrayList<>();
         }
     }
 

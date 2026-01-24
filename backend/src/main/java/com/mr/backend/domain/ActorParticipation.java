@@ -3,6 +3,7 @@ package com.mr.backend.domain;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "actorparticipation")
 public class ActorParticipation {
 
     @Id

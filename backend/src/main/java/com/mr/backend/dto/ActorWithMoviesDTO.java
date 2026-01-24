@@ -4,6 +4,7 @@ import com.mr.backend.domain.Actor;
 import com.mr.backend.domain.ActorParticipation;
 import com.mr.backend.domain.Movie;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,10 +22,12 @@ public class ActorWithMoviesDTO {
         this.lastname = actor.getLastname();
         this.birthdate = actor.getBirthdate();
         
-        if (actor.getParticipations() != null) {
+        if (actor.getParticipations() != null && !actor.getParticipations().isEmpty()) {
             this.movies = actor.getParticipations().stream()
                 .map(participation -> new MovieInfo(participation.getMovie(), participation.getNameInMovie()))
                 .collect(Collectors.toList());
+        } else {
+            this.movies = new ArrayList<>();
         }
     }
 

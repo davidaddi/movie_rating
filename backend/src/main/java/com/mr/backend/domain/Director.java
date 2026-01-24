@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Set;
 
 @Entity
+@Table(name = "director")
 public class Director {
 
     @Id
@@ -16,7 +17,7 @@ public class Director {
     private String lastname;
     private Date birthdate;
 
-    @OneToMany(mappedBy = "director")
+    @OneToMany(mappedBy = "director", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Movie> movies;
 
