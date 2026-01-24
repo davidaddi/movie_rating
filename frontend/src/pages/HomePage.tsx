@@ -1,4 +1,3 @@
-import React from 'react';
 import TopMoviesCarousel from '../components/TopMoviesCarousel';
 import MovieCard from '../components/MovieCard';
 import { topRatedMovies } from '../data/topRatedMovies';
