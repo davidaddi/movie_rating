@@ -437,7 +437,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .star-icon {
@@ -460,6 +460,90 @@
   font-size: 1rem;
   line-height: 1.6;
   color: #cbd5e1;
+  margin-bottom: 1rem;
+}
+
+.movie-director {
+  color: #ffffff;
+  font-size: 1rem;
+  padding: 0.75rem 0;
+}
+
+.person-link {
+  color: #4a9eff;
+  text-decoration: none;
+  transition: color 0.2s;
+  font-weight: 500;
+}
+
+.person-link:hover {
+  color: #6bb3ff;
+  text-decoration: underline;
+}
+
+.movie-actors {
+  color: #ffffff;
+  margin: 1rem 0;
+}
+
+.movie-actors strong {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+
+.actors-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.actor-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #2a3142;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.actor-card:hover {
+  background: #3a4252;
+  transform: translateY(-2px);
+  border-color: #4a9eff;
+}
+
+.actor-avatar-small {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  background: linear-gradient(135deg, #4a9eff 0%, #2a7bcc 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.actor-info-small {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.actor-name {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.actor-role {
+  color: #8b92a7;
+  font-size: 0.85rem;
+  font-style: italic;
 }
 
 .user-rating-section {
@@ -843,4 +927,109 @@
 .carousel-button-icon {
   width: 1.5rem; /* w-6 */
   height: 1.5rem; /* h-6 */
+}
+
+/* ==================== Actor/Director Pages ==================== */
+.person-detail-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.person-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, #1a1f2e 0%, #2a3142 100%);
+  border-radius: 12px;
+  margin-bottom: 3rem;
+}
+
+.person-avatar {
+  width: 140px;
+  height: 140px;
+  min-width: 140px;
+  background: linear-gradient(135deg, #4a9eff 0%, #2a7bcc 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 10px 30px rgba(74, 158, 255, 0.3);
+}
+
+.person-info {
+  flex: 1;
+}
+
+.person-title {
+  color: #ffffff;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+}
+
+.person-metadata {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.metadata-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #8b92a7;
+  font-size: 1rem;
+}
+
+.metadata-item svg {
+  color: #4a9eff;
+}
+
+.movies-section {
+  margin-top: 3rem;
+}
+
+.movies-section h2 {
+  color: #ffffff;
+  font-size: 1.75rem;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.actor-movie-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.role-name {
+  color: #8b92a7;
+  font-size: 0.9rem;
+  font-style: italic;
+  text-align: center;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .person-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .person-title {
+    font-size: 2rem;
+  }
+
+  .person-metadata {
+    justify-content: center;
+  }
 }

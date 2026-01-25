@@ -1,51 +1,54 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Star, ChevronLeft } from 'lucide-react';
-import { topRatedMovies } from '../data/topRatedMovies';
-import { newMovies } from '../data/newMovies';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { Star, ChevronLeft, User } from 'lucide-react';
+import { comments } from '../data/comments';
 import '../styles/App.css';
+import type { MovieDetails } from '../types/Movie';
 
-interface Comment {
-  id: string;
-  user: string;
-  text: string;
-  rating: number;
-  date: string;
-}
 
 export default function MovieDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const allMovies = [...topRatedMovies, ...newMovies];
-  const movie = allMovies.find((m) => m.id === id);
-
+  const [movie, setMovie] = useState<MovieDetails | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [userRating, setUserRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [comment, setComment] = useState('');
-  const [comments, setComments] = useState<Comment[]>([
-    {
-      id: '1',
-      user: 'John Doe',
-      text: 'Amazing movie! Highly recommended.',
-      rating: 5,
-      date: '2 days ago',
-    },
-    {
-      id: '2',
-      user: 'Jane Smith',
-      text: 'Great storyline and excellent acting.',
-      rating: 4,
-      date: '5 days ago',
-    },
-  ]);
 
-  if (!movie) {
+  useEffect(() => {
+    fetch(`http://localhost:8080/api/movies/${id}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Movie not found');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setMovie(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="error-container">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  if (error || !movie) {
     return (
       <div className="error-container">
         <p>Movie not found</p>
-        <button onClick={() => navigate('/')} className="back-button">
-          Back to Home
+        <button onClick={() => navigate(-1)} className="back-button">
+          Back
         </button>
       </div>
     );
@@ -53,24 +56,13 @@ export default function MovieDetailPage() {
 
   const handleSubmitComment = (e: React.FormEvent) => {
     e.preventDefault();
-    if (comment.trim() && userRating > 0) {
-      const newComment: Comment = {
-        id: String(comments.length + 1),
-        user: 'You',
-        text: comment,
-        rating: userRating,
-        date: 'now',
-      };
-      setComments([newComment, ...comments]);
-      setComment('');
-      setUserRating(0);
-    }
+    // TODO: Implement comment submission logic
   };
 
   return (
     <div className="movie-detail-page">
       <button
-        onClick={() => navigate('/')}
+        onClick={() => navigate(-1)}
         className="back-button"
       >
         <ChevronLeft size={20} />
@@ -79,22 +71,58 @@ export default function MovieDetailPage() {
 
       <div className="detail-container">
         <div className="detail-header">
-          <img src={movie.cover} alt={movie.title} className="detail-image" />
+          <img src={movie.imageUrl} alt={movie.name} className="detail-image" />
           <div className="detail-info">
-            <h1 className="detail-title">{movie.title}</h1>
+            <h1 className="detail-title">{movie.name}</h1>
             <div className="detail-rating">
               <Star size={24} className="star-icon" />
-              <span className="rating-value">{movie.rating.toFixed(1)}</span>
+              <span className="rating-value">8.5</span>
               <span className="rating-label">/10</span>
             </div>
+            
             <p className="detail-description">
-              This is a fascinating film with outstanding cinematography and
-              compelling narrative. A must-watch for film enthusiasts.
+              {movie.description || 'This is a fascinating film with outstanding cinematography and compelling narrative. A must-watch for film enthusiasts.'}
             </p>
+            {movie.director && (
+              <div className="movie-director">
+                <strong>Director:</strong>{' '}
+                <Link 
+                  to={`/director/${movie.director.id}`} 
+                  className="person-link"
+                >
+                  {movie.director.firstname} {movie.director.lastname}
+                </Link>
+              </div>
+            )}
+
+            {movie.actors && movie.actors.length > 0 && (
+              <div className="movie-actors">
+                <strong>Cast:</strong>
+                <div className="actors-list">
+                  {movie.actors.map((actor) => (
+                    <Link
+                      key={actor.id}
+                      to={`/actor/${actor.id}`}
+                      className="actor-card"
+                    >
+                      <div className="actor-avatar-small">
+                        <User size={24} />
+                      </div>
+                      <div className="actor-info-small">
+                        <div className="actor-name">
+                          {actor.firstname} {actor.lastname}
+                        </div>
+                        <div className="actor-role">{actor.roleInMovie}</div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
-
-        <div className="user-rating-section">
+          
+         <div className="user-rating-section">
           <h2><strong>Rate this movie</strong></h2>
           <div className="stars-wrapper">
             {[1, 2, 3, 4, 5].map((star) => (
@@ -134,7 +162,6 @@ export default function MovieDetailPage() {
             </button>
           </form>
         </div>
-
         <div className="comments-section">
           <div className="comments-list">
             <h3>Comments ({comments.length})</h3>
