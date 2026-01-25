@@ -3,6 +3,7 @@ package com.mr.backend.domain;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "rating")
 public class Rating {
 
     @Id
