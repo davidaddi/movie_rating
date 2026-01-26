@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import TopMoviesCarousel from '../components/TopMoviesCarousel';
 import MovieCard from '../components/MovieCard';
+import MoviesDataGrid from '../components/MoviesDataGrid';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/Tabs';
 import { topRatedMovies } from '../data/topRatedMovies';
 import { newMovies } from '../data/newMovies';
 import { useSearchContext } from '../layouts/HeaderLayout';
+import { LayoutGrid, Table } from 'lucide-react';
 import '../styles/App.css';
 
 interface Movie {
@@ -65,17 +68,36 @@ export default function HomePage() {
         <section className="movies-section">
           <h2 className="section-title">Search Results ({searchResults.length} found)</h2>
           {searchResults.length > 0 ? (
-            <div className="movies-grid">
-              {searchResults.map((movie) => (
-                <MovieCard
-                  key={movie.id}
-                  id={String(movie.id)}
-                  title={movie.name}
-                  cover={movie.imageUrl || 'https://via.placeholder.com/300x450'}
-                  rating={0}
-                />
-              ))}
-            </div>
+            <Tabs defaultValue="grid">
+              <TabsList>
+                <TabsTrigger value="grid">
+                  <LayoutGrid size={18} style={{ marginRight: '0.5rem' }} />
+                  Grid View
+                </TabsTrigger>
+                <TabsTrigger value="table">
+                  <Table size={18} style={{ marginRight: '0.5rem' }} />
+                  Table View
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="grid">
+                <div className="movies-grid">
+                  {searchResults.map((movie) => (
+                    <MovieCard
+                      key={movie.id}
+                      id={String(movie.id)}
+                      title={movie.name}
+                      cover={movie.imageUrl || 'https://via.placeholder.com/300x450'}
+                      rating={0}
+                    />
+                  ))}
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="table">
+                <MoviesDataGrid movies={searchResults} />
+              </TabsContent>
+            </Tabs>
           ) : (
             <p style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
               No movies found matching your criteria.

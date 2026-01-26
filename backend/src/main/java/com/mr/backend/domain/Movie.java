@@ -30,7 +30,6 @@ public class Movie {
     private Director director;
 
     @OneToMany(mappedBy = "movie")
-    @JsonIgnore
     private Set<ActorParticipation> actorParticipations;
 
     @OneToMany(mappedBy = "movie")

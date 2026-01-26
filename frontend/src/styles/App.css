@@ -1074,3 +1074,51 @@
     justify-content: center;
   }
 }
+
+/* ==================== Tabs Component ==================== */
+.tabs-list {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 2px solid #2a3142;
+  margin-bottom: 2rem;
+}
+
+.tabs-trigger {
+  padding: 0.875rem 1.5rem;
+  background: none;
+  border: none;
+  color: #8b92a7;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.tabs-trigger:hover {
+  color: #ffffff;
+  background-color: rgba(74, 158, 255, 0.1);
+}
+
+.tabs-trigger[data-state="active"] {
+  color: #4a9eff;
+  border-bottom-color: #4a9eff;
+}
+
+.tabs-content {
+  outline: none;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

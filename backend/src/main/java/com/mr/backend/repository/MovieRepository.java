@@ -20,8 +20,9 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     Optional<Movie> findByIdWithDetails(@Param("id") Long id);
 
     @Query("SELECT DISTINCT m FROM Movie m " +
-           "LEFT JOIN m.actorParticipations ap " +
-           "LEFT JOIN ap.actor a " +
+           "LEFT JOIN FETCH m.director " +
+           "LEFT JOIN FETCH m.actorParticipations ap " +
+           "LEFT JOIN FETCH ap.actor a " +
            "WHERE (:name IS NULL OR :name = '' OR LOWER(m.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
            "AND (:description IS NULL OR :description = '' OR LOWER(m.description) LIKE LOWER(CONCAT('%', :description, '%'))) " +
            "AND (:actor IS NULL OR :actor = '' OR " +

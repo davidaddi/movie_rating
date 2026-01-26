@@ -1,5 +1,6 @@
 package com.mr.backend.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,6 +17,7 @@ public class ActorParticipation {
 
     @ManyToOne
     @JoinColumn(name = "movie_id", nullable = false)
+    @JsonIgnore
     private Movie movie;
 
     @ManyToOne
