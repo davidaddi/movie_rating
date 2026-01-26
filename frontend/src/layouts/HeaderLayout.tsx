@@ -1,7 +1,7 @@
 import { Outlet, useOutletContext } from 'react-router-dom';
 import { useState } from 'react';
 import SearchBar from '../components/SearchBar';
-import type { SearchFilters } from '../components/SearchBar';
+import type { SearchFilters } from '../types/Search';
 import '../styles/App.css';
 
 export default function HeaderLayout() {

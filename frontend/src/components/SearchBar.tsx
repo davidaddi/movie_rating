@@ -2,18 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import '../styles/App.css';
+import type { SearchFilters, SearchBarProps } from '../types/Search';
 
-interface SearchBarProps {
-  onSearch?: (filters: SearchFilters) => void;
-}
 
-export interface SearchFilters {
-  query: string;
-  description: string;
-  actor: string;
-  year: string;
-  minRating: string;
-}
 
 export default function SearchBar({ onSearch }: SearchBarProps) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -25,7 +16,6 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
   const [minRating, setMinRating] = useState(searchParams.get('minRating') || '');
 
   useEffect(() => {
-    // Sync with URL params on mount
     const filters = {
       query: searchParams.get('query') || '',
       description: searchParams.get('description') || '',

@@ -4,10 +4,8 @@ import type { ColDef } from 'ag-grid-community';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// Register AG Grid modules
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-// Custom dark theme
 const customDarkTheme = themeQuartz.withParams({
   accentColor: '#4a9eff',
   backgroundColor: '#1a1f2e',
