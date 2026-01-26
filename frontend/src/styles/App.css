@@ -168,6 +168,25 @@
   font-weight: 500;
 }
 
+.advanced-field input {
+  padding: 0.625rem;
+  background-color: #0f1419;
+  border: 1px solid #2a3142;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 0.95rem;
+  transition: border-color 0.3s;
+}
+
+.advanced-field input:hover {
+  border-color: #4a9eff;
+}
+
+.advanced-field input:focus {
+  outline: none;
+  border-color: #4a9eff;
+}
+
 .advanced-field select {
   padding: 0.625rem;
   background-color: #0f1419;
@@ -186,6 +205,28 @@
 .advanced-field select:focus {
   outline: none;
   border-color: #4a9eff;
+}
+
+.advanced-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.reset-button {
+  padding: 0.75rem 2rem;
+  background-color: #3a414e;
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.reset-button:hover {
+  background-color: #4a5566;
 }
 
 /* ==================== Carousel ==================== */

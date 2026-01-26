@@ -1,8 +1,16 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useOutletContext } from 'react-router-dom';
+import { useState } from 'react';
 import SearchBar from '../components/SearchBar';
+import type { SearchFilters } from '../components/SearchBar';
 import '../styles/App.css';
 
 export default function HeaderLayout() {
+  const [searchFilters, setSearchFilters] = useState<SearchFilters | null>(null);
+
+  const handleSearch = (filters: SearchFilters) => {
+    setSearchFilters(filters);
+  };
+
   return (
     <div className="layout-container">
       <header className="header">
@@ -16,8 +24,8 @@ export default function HeaderLayout() {
       </header>
 
       <main className="main-content">
-        <SearchBar />
-        <Outlet />
+        <SearchBar onSearch={handleSearch} />
+        <Outlet context={{ searchFilters }} />
       </main>
 
       <footer className="footer">
@@ -25,4 +33,8 @@ export default function HeaderLayout() {
       </footer>
     </div>
   );
+}
+
+export function useSearchContext() {
+  return useOutletContext<{ searchFilters: SearchFilters | null }>();
 }

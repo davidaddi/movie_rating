@@ -5,10 +5,7 @@ import com.mr.backend.dto.MovieWithDetailsDTO;
 import com.mr.backend.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,5 +26,15 @@ public class MovieController {
         return movieService.getMovieWithDetails(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/search")
+    public List<Movie> searchMovies(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) String actor,
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Double minRating) {
+        return movieService.searchMovies(name, description, actor, year, minRating);
     }
 }
