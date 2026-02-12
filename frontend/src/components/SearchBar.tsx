@@ -141,14 +141,21 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
             </div>
             <div className="advanced-field">
               <label>Minimum Rating</label>
-              <select value={minRating} onChange={(e) => setMinRating(e.target.value)}>
-                <option value="">Any Rating</option>
-                <option value="9">9+ Stars</option>
-                <option value="8">8+ Stars</option>
-                <option value="7">7+ Stars</option>
-                <option value="6">6+ Stars</option>
-                <option value="5">5+ Stars</option>
-              </select>
+              <input
+                type="number"
+                min={0}
+                max={5}
+                step={0.1}
+                value={minRating}
+                onChange={e => {
+                  const val = e.target.value;
+                  if (val === "" || (Number(val) >= 0 && Number(val) <= 5)) {
+                    setMinRating(val);
+                  }
+                }}
+                placeholder="0-5"
+                className="min-rating-input"
+              />
             </div>
           </div>
           <div className="advanced-actions">

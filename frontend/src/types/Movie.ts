@@ -11,6 +11,13 @@ export interface MovieActor {
   roleInMovie: string;
 }
 
+export interface MovieReview {
+  id: number;
+  username: string;
+  rating: number;
+  comment: string;
+}
+
 export interface MovieDetails {
   id: number;
   name: string;
@@ -19,4 +26,5 @@ export interface MovieDetails {
   imageUrl: string;
   director: MovieDirector;
   actors: MovieActor[];
+  reviews: MovieReview[];
 }

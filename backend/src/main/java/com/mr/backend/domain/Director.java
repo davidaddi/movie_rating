@@ -21,7 +21,6 @@ public class Director {
     @JsonIgnore
     private Set<Movie> movies;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

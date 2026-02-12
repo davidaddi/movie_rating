@@ -1,11 +1,14 @@
-import { Search, SlidersHorizontal } from 'lucide-react';
+import { Search, SlidersHorizontal, LogOut, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 interface HeaderProps {
   onShowAdvancedSearch: () => void;
 }
 
 export default function Header({ onShowAdvancedSearch }: HeaderProps) {
+  const { isConnected, setIsConnected } = useAuth();
+
   return (
     <header className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 shadow-xl border-b border-slate-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -13,13 +16,34 @@ export default function Header({ onShowAdvancedSearch }: HeaderProps) {
           <h1 className="text-3xl font-bold text-white tracking-tight">
             <Link to="/">CineDB</Link>
           </h1>
-          <div className="flex gap-3">
-            <button className="px-6 py-2.5 text-sm font-medium text-white bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors duration-200">
-              Sign In
-            </button>
-            <button className="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors duration-200 shadow-lg shadow-blue-500/30">
-              Sign Up
-            </button>
+          <div className="flex gap-3 items-center">
+            {isConnected ? (
+              <>
+                <div className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-slate-700 rounded-lg">
+                  <User className="w-4 h-4" />
+                  <span>john_doe</span>
+                </div>
+                <button
+                  onClick={() => setIsConnected(false)}
+                  className="px-6 py-2.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200 flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => setIsConnected(true)}
+                  className="px-6 py-2.5 text-sm font-medium text-white bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors duration-200"
+                >
+                  Sign In
+                </button>
+                <button className="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors duration-200 shadow-lg shadow-blue-500/30">
+                  Sign Up
+                </button>
+              </>
+            )}
           </div>
         </div>
 

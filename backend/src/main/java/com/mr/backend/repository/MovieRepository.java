@@ -12,10 +12,15 @@ import java.util.Optional;
 @Repository
 public interface MovieRepository extends JpaRepository<Movie, Long> {
     
+    @Query("SELECT DISTINCT m FROM Movie m LEFT JOIN FETCH m.ratings")
+    List<Movie> findAllWithRatings();
+    
     @Query("SELECT m FROM Movie m " +
            "LEFT JOIN FETCH m.director " +
            "LEFT JOIN FETCH m.actorParticipations ap " +
            "LEFT JOIN FETCH ap.actor " +
+           "LEFT JOIN FETCH m.ratings r " +
+           "LEFT JOIN FETCH r.user " +
            "WHERE m.id = :id")
     Optional<Movie> findByIdWithDetails(@Param("id") Long id);
 
@@ -23,6 +28,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
            "LEFT JOIN FETCH m.director " +
            "LEFT JOIN FETCH m.actorParticipations ap " +
            "LEFT JOIN FETCH ap.actor a " +
+           "LEFT JOIN FETCH m.ratings " +
            "WHERE (:name IS NULL OR :name = '' OR LOWER(m.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
            "AND (:description IS NULL OR :description = '' OR LOWER(m.description) LIKE LOWER(CONCAT('%', :description, '%'))) " +
            "AND (:actor IS NULL OR :actor = '' OR " +

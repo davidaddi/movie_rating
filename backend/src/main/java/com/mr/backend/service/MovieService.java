@@ -1,6 +1,7 @@
 package com.mr.backend.service;
 
 import com.mr.backend.domain.Movie;
+import com.mr.backend.dto.MovieListDTO;
 import com.mr.backend.dto.MovieWithDetailsDTO;
 import com.mr.backend.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,11 @@ public class MovieService {
     @Autowired
     private MovieRepository movieRepository;
 
-    public List<Movie> getAllMovies() {
-        return movieRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<MovieListDTO> getAllMovies() {
+        return movieRepository.findAllWithRatings().stream()
+                .map(MovieListDTO::new)
+                .collect(Collectors.toList());
     }
     
     @Transactional(readOnly = true)
@@ -28,7 +32,7 @@ public class MovieService {
     }
 
     @Transactional(readOnly = true)
-    public List<Movie> searchMovies(String name, String description, String actor, Integer year, Double minRating) {
+    public List<MovieListDTO> searchMovies(String name, String description, String actor, Integer year, Double minRating) {
         // Convert empty strings to null for proper query handling
         String nameParam = (name != null && name.trim().isEmpty()) ? null : name;
         String descParam = (description != null && description.trim().isEmpty()) ? null : description;
@@ -52,6 +56,8 @@ public class MovieService {
                     .collect(Collectors.toList());
         }
         
-        return movies;
+        return movies.stream()
+                .map(MovieListDTO::new)
+                .collect(Collectors.toList());
     }
 }

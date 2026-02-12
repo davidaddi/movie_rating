@@ -36,7 +36,6 @@ public class Movie {
     @JsonIgnore
     private Set<Rating> ratings;
 
-    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -99,5 +98,15 @@ public class Movie {
 
     public void setRatings(Set<Rating> ratings) {
         this.ratings = ratings;
+    }
+
+    public Double getAvgRating() {
+        if (ratings == null || ratings.isEmpty()) {
+            return 0.0;
+        }
+        return ratings.stream()
+                .mapToDouble(Rating::getRating)
+                .average()
+                .orElse(0.0);
     }
 }

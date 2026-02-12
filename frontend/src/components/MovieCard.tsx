@@ -5,7 +5,7 @@ import '../styles/App.css';
 interface MovieCardProps {
   id: string;
   title: string;
-  cover: string;
+  cover: string | null;
   rating: number;
 }
 
@@ -19,7 +19,7 @@ export default function MovieCard({
     <Link to={`/movie/${id}`} className="movie-card-link">
       <div className="movie-card">
         <div className="movie-image-wrapper">
-          <img src={cover} alt={title} className="movie-image" />
+          <img src={cover ?? ''} alt={title} className="movie-image" />
           <div className="movie-overlay" />
           <div className="movie-rating">
             <Star size={16} className="rating-star" />

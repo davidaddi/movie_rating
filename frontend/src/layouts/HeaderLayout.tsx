@@ -2,10 +2,12 @@ import { Outlet, useOutletContext } from 'react-router-dom';
 import { useState } from 'react';
 import SearchBar from '../components/SearchBar';
 import type { SearchFilters } from '../types/Search';
+import { useAuth } from '../contexts/AuthContext';
 import '../styles/App.css';
 
 export default function HeaderLayout() {
   const [searchFilters, setSearchFilters] = useState<SearchFilters | null>(null);
+  const { isConnected, setIsConnected } = useAuth();
 
   const handleSearch = (filters: SearchFilters) => {
     setSearchFilters(filters);
@@ -17,8 +19,14 @@ export default function HeaderLayout() {
         <div className="header-content">
           <h1 className="logo">MovieDB</h1>
           <div className="auth-buttons">
-            <button className="sign-in-button">Sign In</button>
-            <button className="sign-up-button">Sign Up</button>
+            <select
+              className="connection-dropdown"
+              value={isConnected ? 'connected' : 'not-connected'}
+              onChange={(e) => setIsConnected(e.target.value === 'connected')}
+            >
+              <option value="not-connected">Not Connected</option>
+              <option value="connected">Connected</option>
+            </select>
           </div>
         </div>
       </header>

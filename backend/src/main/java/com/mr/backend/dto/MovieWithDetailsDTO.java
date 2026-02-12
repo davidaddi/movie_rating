@@ -17,6 +17,7 @@ public class MovieWithDetailsDTO {
     private String imageUrl;
     private DirectorInfo director;
     private List<ActorInfo> actors;
+    private List<ReviewInfo> reviews;
 
     public MovieWithDetailsDTO(Movie movie) {
         this.id = movie.getId();
@@ -44,6 +45,20 @@ public class MovieWithDetailsDTO {
                 .collect(Collectors.toList());
         } else {
             this.actors = new ArrayList<>();
+        }
+
+        if (movie.getRatings() != null) {
+            this.reviews = movie.getRatings().stream()
+                .filter(r -> r.getComment() != null && !r.getComment().isEmpty())
+                .map(r -> new ReviewInfo(
+                    r.getId(),
+                    r.getUser().getUsername(),
+                    r.getRating(),
+                    r.getComment()
+                ))
+                .collect(Collectors.toList());
+        } else {
+            this.reviews = new ArrayList<>();
         }
     }
 
@@ -129,7 +144,7 @@ public class MovieWithDetailsDTO {
         }
     }
 
-    // Getters and setters
+    
     public Long getId() {
         return id;
     }
@@ -184,5 +199,59 @@ public class MovieWithDetailsDTO {
 
     public void setActors(List<ActorInfo> actors) {
         this.actors = actors;
+    }
+
+    public List<ReviewInfo> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<ReviewInfo> reviews) {
+        this.reviews = reviews;
+    }
+
+    public static class ReviewInfo {
+        private Long id;
+        private String username;
+        private Float rating;
+        private String comment;
+
+        public ReviewInfo(Long id, String username, Float rating, String comment) {
+            this.id = id;
+            this.username = username;
+            this.rating = rating;
+            this.comment = comment;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public Float getRating() {
+            return rating;
+        }
+
+        public void setRating(Float rating) {
+            this.rating = rating;
+        }
+
+        public String getComment() {
+            return comment;
+        }
+
+        public void setComment(String comment) {
+            this.comment = comment;
+        }
     }
 }

@@ -17,7 +17,6 @@ public class ActorDTO {
         this.birthdate = actor.getBirthdate();
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

@@ -43,7 +43,7 @@ public class DirectorWithMoviesDTO {
             this.releaseDate = movie.getReleaseDate();
         }
 
-        // Getters and Setters
+        
         public Long getId() {
             return id;
         }
@@ -77,7 +77,7 @@ public class DirectorWithMoviesDTO {
         }
     }
 
-    // Getters and Setters
+    
     public Long getId() {
         return id;
     }

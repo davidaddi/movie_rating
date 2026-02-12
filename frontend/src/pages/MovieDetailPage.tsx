@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Star, ChevronLeft, User } from 'lucide-react';
-import { comments } from '../data/comments';
+import { useAuth } from '../contexts/AuthContext';
 import '../styles/App.css';
 import type { MovieDetails } from '../types/Movie';
 
@@ -9,6 +9,7 @@ import type { MovieDetails } from '../types/Movie';
 export default function MovieDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { isConnected } = useAuth();
 
   const [movie, setMovie] = useState<MovieDetails | null>(null);
   const [loading, setLoading] = useState(true);
@@ -16,6 +17,8 @@ export default function MovieDetailPage() {
   const [userRating, setUserRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [comment, setComment] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [hasExistingReview, setHasExistingReview] = useState(false);
 
   useEffect(() => {
     fetch(`http://localhost:8080/api/movies/${id}`)
@@ -28,12 +31,29 @@ export default function MovieDetailPage() {
       .then((data) => {
         setMovie(data);
         setLoading(false);
+        
+        // Check if current user has already reviewed this movie
+        if (isConnected && data.reviews) {
+          const existingReview = data.reviews.find(
+            (r: { username: string }) => r.username === 'john_doe'
+          );
+          if (existingReview) {
+            setHasExistingReview(true);
+          }
+        }
       })
       .catch((err) => {
         setError(err.message);
         setLoading(false);
       });
-  }, [id]);
+  }, [id, isConnected]);
+
+  const refreshMovie = () => {
+    fetch(`http://localhost:8080/api/movies/${id}`)
+      .then((response) => response.json())
+      .then((data) => setMovie(data))
+      .catch(console.error);
+  };
 
   if (loading) {
     return (
@@ -54,9 +74,33 @@ export default function MovieDetailPage() {
     );
   }
 
-  const handleSubmitComment = (e: React.FormEvent) => {
+  const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement comment submission logic
+    if (!comment.trim() || userRating === 0 || submitting) return;
+
+    setSubmitting(true);
+    try {
+      const response = await fetch(`http://localhost:8080/api/movies/${id}/ratings`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          rating: userRating,
+          comment: comment.trim(),
+          username: 'john_doe', // Simulated logged-in user
+        }),
+      });
+
+      if (response.ok) {
+        setHasExistingReview(true);
+        refreshMovie();
+      }
+    } catch (err) {
+      console.error('Failed to submit comment:', err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -76,8 +120,12 @@ export default function MovieDetailPage() {
             <h1 className="detail-title">{movie.name}</h1>
             <div className="detail-rating">
               <Star size={24} className="star-icon" />
-              <span className="rating-value">8.5</span>
-              <span className="rating-label">/10</span>
+              <span className="rating-value">
+                {movie.reviews && movie.reviews.length > 0
+                  ? (movie.reviews.reduce((sum, r) => sum + r.rating, 0) / movie.reviews.length).toFixed(1)
+                  : 'N/A'}
+              </span>
+              <span className="rating-label">/5</span>
             </div>
             
             <p className="detail-description">
@@ -124,65 +172,77 @@ export default function MovieDetailPage() {
           
          <div className="user-rating-section">
           <h2><strong>Rate this movie</strong></h2>
-          <div className="stars-wrapper">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <button
-                key={star}
-                className={`star-button ${
-                  star <= (hoveredRating || userRating) ? 'active' : ''
-                }`}
-                onClick={() => setUserRating(star)}
-                onMouseEnter={() => setHoveredRating(star)}
-                onMouseLeave={() => setHoveredRating(0)}
-              >
-                <Star size={32} />
-              </button>
-            ))}
-          </div>
-          {userRating > 0 && (
-            <p className="rating-display">
-              You rated this movie {userRating} star{userRating !== 1 ? 's' : ''}
+          {isConnected ? (
+            hasExistingReview ? (
+              <p className="existing-review-notice" style={{ color: '#60a5fa', fontSize: '0.95rem' }}>
+                You have already reviewed this movie.
+              </p>
+            ) : (
+              <>
+                <div className="stars-wrapper">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      className={`star-button ${
+                        star <= (hoveredRating || userRating) ? 'active' : ''
+                      }`}
+                      onClick={() => setUserRating(star)}
+                      onMouseEnter={() => setHoveredRating(star)}
+                      onMouseLeave={() => setHoveredRating(0)}
+                    >
+                      <Star size={32} />
+                    </button>
+                  ))}
+                </div>
+
+                <form onSubmit={handleSubmitComment}>
+                  <textarea
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="Share your thoughts about this movie..."
+                    className="comment-input"
+                    rows={4}
+                  />
+                  <button
+                    type="submit"
+                    className="submit-button"
+                    disabled={!comment.trim() || userRating === 0 || submitting}
+                  >
+                    {submitting ? 'Posting...' : 'Post Comment'}
+                  </button>
+                </form>
+              </>
+            )
+          ) : (
+            <p className="login-prompt">
+              Sign up or sign in to leave a comment
             </p>
           )}
-
-          <form onSubmit={handleSubmitComment}>
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Share your thoughts about this movie..."
-              className="comment-input"
-              rows={4}
-            />
-            <button
-              type="submit"
-              className="submit-button"
-              disabled={!comment.trim() || userRating === 0}
-            >
-              Post Comment
-            </button>
-          </form>
         </div>
         <div className="comments-section">
           <div className="comments-list">
-            <h3>Comments ({comments.length})</h3>
-            {comments.map((c) => (
-              <div key={c.id} className="comment-item">
-                <div className="comment-header">
-                  <span className="comment-user">{c.user}</span>
-                  <div className="comment-rating">
-                    {[...Array(c.rating)].map((_, i) => (
-                      <Star
-                        key={i}
-                        size={14}
-                        className="comment-star"
-                      />
-                    ))}
+            <h3>Comments ({movie.reviews?.length || 0})</h3>
+            {movie.reviews && movie.reviews.length > 0 ? (
+              movie.reviews.map((review) => (
+                <div key={review.id} className="comment-item">
+                  <div className="comment-header">
+                    <span className="comment-user">{review.username}</span>
+                    <div className="comment-rating">
+                      {[...Array(Math.round(review.rating))].map((_, i) => (
+                        <Star
+                          key={i}
+                          size={14}
+                          className="comment-star"
+                        />
+                      ))}
+                    </div>
                   </div>
-                  <span className="comment-date">{c.date}</span>
+                  <p className="comment-text">{review.comment}</p>
                 </div>
-                <p className="comment-text">{c.text}</p>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="no-comments">No comments yet. Be the first to share your thoughts!</p>
+            )}
           </div>
         </div>
       </div>

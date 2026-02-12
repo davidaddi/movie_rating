@@ -21,7 +21,6 @@ public class Actor {
     @JsonIgnore
     private Set<ActorParticipation> participations;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

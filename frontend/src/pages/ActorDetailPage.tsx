@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { ChevronLeft, User, Calendar, Film } from 'lucide-react';
 import MovieCard from '../components/MovieCard';
+import RatingsHistogram from '../components/RatingsHistogram';
 import type { Actor } from '../types/Actor';
 import '../styles/App.css';
 
@@ -77,6 +78,8 @@ export default function ActorDetailPage() {
             </div>
           </div>
         </div>
+
+        <RatingsHistogram movies={actor.movies} />
 
         <div className="movies-section">
           <h2>Filmography</h2>

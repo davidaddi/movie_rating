@@ -3,8 +3,6 @@ import TopMoviesCarousel from '../components/TopMoviesCarousel';
 import MovieCard from '../components/MovieCard';
 import MoviesDataGrid from '../components/MoviesDataGrid';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/Tabs';
-import { topRatedMovies } from '../data/topRatedMovies';
-import { newMovies } from '../data/newMovies';
 import { useSearchContext } from '../layouts/HeaderLayout';
 import { LayoutGrid, Table } from 'lucide-react';
 import '../styles/App.css';
@@ -15,12 +13,61 @@ interface Movie {
   description?: string;
   releaseDate?: string;
   imageUrl?: string;
+  ratings?: { rating: number }[];
+  rating?: number;
+  avgRating?: number;
+}
+
+interface CarouselMovie {
+  id: string;
+  title: string;
+  cover: string | null;
+  rating: number;
 }
 
 export default function HomePage() {
   const { searchFilters } = useSearchContext();
   const [searchResults, setSearchResults] = useState<Movie[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [topMovies, setTopMovies] = useState<CarouselMovie[]>([]);
+  const [newMovies, setNewMovies] = useState<CarouselMovie[]>([]);
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/movies');
+        const data: Movie[] = await response.json();
+        
+        const newest = data
+          .filter(m => m.id >= 6)
+          .sort((a, b) => b.id - a.id)
+          .slice(0, 12)
+          .map(m => ({
+            id: String(m.id),
+            title: m.name,
+            cover: m.imageUrl ?? null,
+            rating: typeof m.avgRating === 'number' ? m.avgRating : 0
+          }));
+        
+        const top = data
+          .filter(m => m.id <= 5)
+          .map(m => ({
+            id: String(m.id),
+            title: m.name,
+            cover: m.imageUrl ?? null,
+            rating: typeof m.avgRating === 'number' ? m.avgRating : 0
+          }));
+        
+        setNewMovies(newest);
+        setTopMovies(top);
+      } catch (error) {
+        console.error('Error fetching movies:', error);
+      }
+    };
+
+    fetchMovies();
+  }, []);
 
   useEffect(() => {
     if (!searchFilters) {
@@ -40,6 +87,7 @@ export default function HomePage() {
     }
 
     setIsSearching(true);
+    setIsLoading(true);
 
     const fetchSearchResults = async () => {
       try {
@@ -51,11 +99,22 @@ export default function HomePage() {
         if (searchFilters.minRating) params.append('minRating', searchFilters.minRating);
 
         const response = await fetch(`http://localhost:8080/api/movies/search?${params.toString()}`);
-        const data = await response.json();
+        let data = await response.json();
+
+        // Use avgRating from backend (already computed), ensure it's between 0 and 5
+        data = data.map((movie: any) => {
+          let avgRating = movie.avgRating;
+          if (typeof avgRating !== 'number' || isNaN(avgRating)) avgRating = 0;
+          avgRating = Math.max(0, Math.min(5, avgRating));
+          return { ...movie, avgRating };
+        });
+
         setSearchResults(data);
+        setIsLoading(false);
       } catch (error) {
         console.error('Error searching movies:', error);
         setSearchResults([]);
+        setIsLoading(false);
       }
     };
 
@@ -66,7 +125,9 @@ export default function HomePage() {
     <>
       {isSearching ? (
         <section className="movies-section">
-          <h2 className="section-title">Search Results ({searchResults.length} found)</h2>
+          <h2 className="section-title">
+            {isLoading ? 'Searching...' : `Search Results (${searchResults.length} found)`}
+          </h2>
           {searchResults.length > 0 ? (
             <Tabs defaultValue="grid">
               <TabsList>
@@ -87,8 +148,8 @@ export default function HomePage() {
                       key={movie.id}
                       id={String(movie.id)}
                       title={movie.name}
-                      cover={movie.imageUrl || 'https://via.placeholder.com/300x450'}
-                      rating={0}
+                      cover={movie.imageUrl ?? null}
+                      rating={typeof movie.avgRating === 'number' ? movie.avgRating : 0}
                     />
                   ))}
                 </div>
@@ -98,6 +159,10 @@ export default function HomePage() {
                 <MoviesDataGrid movies={searchResults} />
               </TabsContent>
             </Tabs>
+          ) : isLoading ? (
+            <p style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>
+              Loading...
+            </p>
           ) : (
             <p style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
               No movies found matching your criteria.
@@ -108,7 +173,7 @@ export default function HomePage() {
         <>
           <section className="movies-section">
             <h2 className="section-title">Top Rated Movies</h2>
-            <TopMoviesCarousel movies={topRatedMovies} />
+            <TopMoviesCarousel movies={topMovies} />
           </section>
 
           <section className="movies-section">

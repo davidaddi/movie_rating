@@ -24,7 +24,6 @@ public class ActorParticipation {
     @JoinColumn(name = "actor_id", nullable = false)
     private Actor actor;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

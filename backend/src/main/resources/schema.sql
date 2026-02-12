@@ -1,32 +1,25 @@
--- Drop tables if they exist (in reverse order of dependencies)
-DROP TABLE IF EXISTS Rating CASCADE;
-DROP TABLE IF EXISTS ActorParticipation CASCADE;
-DROP TABLE IF EXISTS Movie CASCADE;
-DROP TABLE IF EXISTS Director CASCADE;
-DROP TABLE IF EXISTS Actor CASCADE;
-DROP TABLE IF EXISTS "User" CASCADE;
 
-CREATE TABLE Actor (
+CREATE TABLE IF NOT EXISTS Actor (
     id SERIAL PRIMARY KEY,
     firstname VARCHAR(255) NOT NULL,
     lastname VARCHAR(255) NOT NULL,
     birthdate DATE
 );
 
-CREATE TABLE Director (
+CREATE TABLE IF NOT EXISTS Director (
     id SERIAL PRIMARY KEY,
     firstname VARCHAR(255) NOT NULL,
     lastname VARCHAR(255) NOT NULL,
     birthdate DATE
 );
 
-CREATE TABLE "User" (
+CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE Movie (
+CREATE TABLE IF NOT EXISTS Movie (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
@@ -41,7 +34,7 @@ CREATE TABLE Movie (
         ON UPDATE CASCADE
 );
 
-CREATE TABLE ActorParticipation (
+CREATE TABLE IF NOT EXISTS ActorParticipation (
     id SERIAL PRIMARY KEY,
     name_in_movie VARCHAR(255),
     wage FLOAT,
@@ -61,9 +54,10 @@ CREATE TABLE ActorParticipation (
         ON UPDATE CASCADE
 );
 
-CREATE TABLE Rating (
+CREATE TABLE IF NOT EXISTS Rating (
     id SERIAL PRIMARY KEY,
-    rating FLOAT NOT NULL CHECK (rating >= 0 AND rating <= 10),
+    rating FLOAT NOT NULL CHECK (rating >= 0 AND rating <= 5),
+    comment TEXT,
     movie_id INT NOT NULL,
     user_id INT NOT NULL,
 
@@ -75,7 +69,10 @@ CREATE TABLE Rating (
 
     CONSTRAINT fk_rating_user
         FOREIGN KEY (user_id)
-        REFERENCES "User"(id)
+        REFERENCES users(id)
         ON DELETE CASCADE
-        ON UPDATE CASCADE
+        ON UPDATE CASCADE,
+
+    CONSTRAINT unique_user_movie_rating
+        UNIQUE (movie_id, user_id)
 );

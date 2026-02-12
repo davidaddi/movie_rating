@@ -3,6 +3,7 @@ export interface ActorMovie {
   name: string;
   imageUrl: string;
   roleInMovie: string;
+  avgRating: number;
 }
 
 export interface Actor {

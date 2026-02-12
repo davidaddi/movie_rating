@@ -22,7 +22,6 @@ public class User {
     @JsonIgnore
     private Set<Rating> ratings;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

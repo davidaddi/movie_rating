@@ -17,7 +17,7 @@ public class DirectorDTO {
         this.birthdate = director.getBirthdate();
     }
 
-    // Getters and Setters
+    
     public Long getId() {
         return id;
     }

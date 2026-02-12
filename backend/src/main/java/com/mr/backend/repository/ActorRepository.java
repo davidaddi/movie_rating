@@ -11,6 +11,10 @@ import java.util.Optional;
 @Repository
 public interface ActorRepository extends JpaRepository<Actor, Long> {
     
-    @Query("SELECT a FROM Actor a LEFT JOIN FETCH a.participations p LEFT JOIN FETCH p.movie WHERE a.id = :id")
+    @Query("SELECT DISTINCT a FROM Actor a " +
+           "LEFT JOIN FETCH a.participations p " +
+           "LEFT JOIN FETCH p.movie m " +
+           "LEFT JOIN FETCH m.ratings " +
+           "WHERE a.id = :id")
     Optional<Actor> findByIdWithMovies(@Param("id") Long id);
 }

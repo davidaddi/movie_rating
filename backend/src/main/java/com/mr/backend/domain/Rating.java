@@ -13,15 +13,17 @@ public class Rating {
     @Column(nullable = false)
     private Float rating;
 
+    @Column(columnDefinition = "TEXT")
+    private String comment;
+
     @ManyToOne
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -36,6 +38,14 @@ public class Rating {
 
     public void setRating(Float rating) {
         this.rating = rating;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public Movie getMovie() {

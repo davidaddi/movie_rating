@@ -6,7 +6,7 @@ import '../styles/App.css';
 interface Movie {
   id: string;
   title: string;
-  cover: string;
+  cover: string | null;
   rating: number;
 }
 
@@ -22,7 +22,6 @@ export default function TopMoviesCarousel({ movies }: TopMoviesCarouselProps) {
   const infiniteMovies = [...movies, ...movies, ...movies];
 
   useEffect(() => {
-    // Initialiser le scroll au premier film original
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollLeft = itemWidth * movies.length;
     }
@@ -83,7 +82,7 @@ export default function TopMoviesCarousel({ movies }: TopMoviesCarouselProps) {
           <Link to={`/movie/${movie.id}`} key={`${movie.id}-${index}`} className="carousel-item" style={{ textDecoration: 'none' }}>
             <div className="carousel-item-image-wrapper">
               <img
-                src={movie.cover}
+                src={movie.cover ?? ''}
                 alt={movie.title}
                 className="carousel-item-image"
               />

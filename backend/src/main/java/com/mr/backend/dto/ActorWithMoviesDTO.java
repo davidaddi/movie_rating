@@ -36,15 +36,25 @@ public class ActorWithMoviesDTO {
         private String name;
         private String imageUrl;
         private String roleInMovie;
+        private Double avgRating;
 
         public MovieInfo(Movie movie, String roleInMovie) {
             this.id = movie.getId();
             this.name = movie.getName();
             this.imageUrl = movie.getImageUrl();
             this.roleInMovie = roleInMovie;
+            
+            //  average rating
+            if (movie.getRatings() != null && !movie.getRatings().isEmpty()) {
+                this.avgRating = movie.getRatings().stream()
+                    .mapToDouble(rating -> rating.getRating())
+                    .average()
+                    .orElse(0.0);
+            } else {
+                this.avgRating = 0.0;
+            }
         }
 
-        // Getters and Setters
         public Long getId() {
             return id;
         }
@@ -76,9 +86,16 @@ public class ActorWithMoviesDTO {
         public void setRoleInMovie(String roleInMovie) {
             this.roleInMovie = roleInMovie;
         }
+
+        public Double getAvgRating() {
+            return avgRating;
+        }
+
+        public void setAvgRating(Double avgRating) {
+            this.avgRating = avgRating;
+        }
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
