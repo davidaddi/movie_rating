@@ -24,7 +24,6 @@ public class HealthController {
         healthResponse.put("status", "UP");
         healthResponse.put("api", "OK");
 
-        // Vérifier la connexion à la base de données
         boolean dbHealthy = checkDatabase();
         healthResponse.put("database", dbHealthy ? "OK" : "DOWN");
 
