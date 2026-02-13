@@ -12,12 +12,12 @@ En ce qui concerne les fonctionnalités principales de site conçu. Nous avons l
 
 Backend : 
 - Springboot (Ingestion des données sql au sein de l'API)
+- API : Swagger
+- Base de données : Postgre
+- Serveur Pages statiques / Reverse proxy : Nginx
 
 Frontend :
 - React (Vite)
-
-Base de données :
-- Postgre
 
 Conteneurisation :
 - Docker
@@ -26,14 +26,24 @@ Afin que l'ensemble des composants de l'application se lancent en même temps, i
 
 ## Comment mettre en route le projet
 
+Lancer le projet
+
 ```sh
-docker compose up --build
+docker compose up
 ```
 
-Vérifier le statut coté back
+Vérifier le statut coté api
 ```sh
-curl -s http://localhost:8080/actuator/health | jq -r '.status'
+curl -s http://localhost:8080/api/v2/health | jq -r '.status'
 ```
+
+Connexion à l'API
+
+```sh
+http://localhost:8080/swagger-ui/index.html
+```
+
+
 
 Lien de la page frontend :
 
